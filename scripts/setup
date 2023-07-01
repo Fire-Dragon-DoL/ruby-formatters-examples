@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -xe
+
+gem install rubyfmt
+gem install rubocop
+gem install rufo
+gem install standard
+gem install syntax_tree
+npm install --global prettier @prettier/plugin-ruby

@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require "fileutils"
+
+require_relative "../lib/ruby-formatters-examples"
+
+module Run
+  extend self
+
+  FORMATTERS = [
+    Formatter::Prettier,
+    Formatter::Rubocop,
+    Formatter::Rubyfmt,
+    Formatter::Rufo,
+    Formatter::Standard,
+    Formatter::SyntaxTree,
+  ].freeze
+
+  def call
+    FORMATTERS.each do |formatter|
+      setup(formatter)
+
+      formatter.format
+    end
+  end
+
+  def setup(formatter)
+    FileUtils.mkdir_p(formatter.output_path.to_s)
+    formatter.setup
+  end
+end
+
+Run.()
