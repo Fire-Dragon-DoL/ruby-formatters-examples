@@ -21,3 +21,13 @@ Requirements:
 # Format
 ./script/format
 ```
+
+## My Opinion
+
+<details><summary>Expand</summary>
+
+
+![Opinion](opinion.png?raw=true)
+
+
+</details>
