@@ -1,31 +1,53 @@
 #!/usr/bin/env ruby
 
+require "bundler/inline"
+gemfile do
+  source "https://rubygems.org"
+  gem "parallel"
+  gem "pry-byebug"
+end
+
 require "fileutils"
+require "pathname"
+require "parallel"
+require "pry-byebug"
 
 require_relative "../lib/ruby-formatters-examples"
 
 module Run
   extend self
 
-  FORMATTERS = [
-    Formatter::Prettier,
-    Formatter::Rubocop,
-    Formatter::Rubyfmt,
-    Formatter::Rufo,
-    Formatter::Standard,
-    Formatter::SyntaxTree,
-  ].freeze
+  FORMATTERS = Formatter::ALL
+
+  OUTPUT_PATH = Pathname.new("output").freeze
+  INPUT_PATH = Pathname.new("original").freeze
+  TMP_PATH = Pathname.new("tmp").freeze
 
   def call
-    FORMATTERS.each do |formatter|
+    init
+
+    Parallel.each(FORMATTERS) do |formatter|
       setup(formatter)
 
       formatter.format
     end
   end
 
+  def init
+    FileUtils.mkdir_p(OUTPUT_PATH)
+  end
+
   def setup(formatter)
-    FileUtils.mkdir_p(formatter.output_path.to_s)
+    output_path = OUTPUT_PATH.join(formatter.output_path)
+
+    # Clean
+    FileUtils.rm_rf(output_path)
+
+    # Build directory with files to format
+    FileUtils.mkdir_p(output_path)
+    FileUtils.cp_r("#{INPUT_PATH}/.", output_path, remove_destination: true)
+
+    # Setup formatter
     formatter.setup
   end
 end

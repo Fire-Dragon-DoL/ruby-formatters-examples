@@ -2,9 +2,19 @@
 
 set -xe
 
-gem install rubyfmt
-gem install rubocop
-gem install rufo
-gem install standard
-gem install syntax_tree
+mkdir -p 'tmp/bin'
+pushd 'tmp/bin'
+rm -rf 'rubyfmt'
+git clone git@github.com:fables-tales/rubyfmt.git
+pushd 'rubyfmt'
+make all
+popd
+popd
+
+gem install \
+  rubocop \
+  rufo \
+  standard \
+  syntax_tree \
+  prettier
 npm install --global prettier @prettier/plugin-ruby
